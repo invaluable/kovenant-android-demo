@@ -1,11 +1,17 @@
-Kovenant Android Demo
+Kovenant Android Demo - OAS Edition
 ===========
 
-Demo Android app that shows [Kovenant](http://kovenant.mplatvoet.nl)/[Github](https://github.com/mplatvoet/kovenant) in action.
-It simply does a github search for projects projects written in Kotlin targeting Android and
-displays them in most recently updated order.
+Originally forked from [Kovenant Android Demo](https://github.com/mplatvoet/kovenant-android-demo)
 
-Also uses:
+It calls the OAS backend for a list of auctions and displays:
+
+* Catalog Photo
+* Catalog Name
+* House Name
+
+Tapping on an auction brings you to the catalog page in your browser
+
+Additional Technologies:
 
 - [Anko](https://github.com/JetBrains/anko)
 - [Fuel](https://github.com/kittinunf/Fuel)
