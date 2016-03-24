@@ -14,18 +14,15 @@ import nl.komponents.kovenant.jvm.Throttle
 import nl.komponents.kovenant.then
 import nl.komponents.kovenant.ui.failUi
 import nl.komponents.kovenant.ui.successUi
-import org.jetbrains.anko.dip
-import org.jetbrains.anko.find
-import org.jetbrains.anko.listView
-import org.jetbrains.anko.toast
+import org.jetbrains.anko.*
 import uy.kohesive.injekt.injectLazy
 
 
-val url = "https://api.github.com/search/repositories"
+val url = "http://web.invaluable.com/app/online-auctions"
 
 
-class GithubActivity : Activity() {
-    val searchParser: GithubSearchJsonParser by injectLazy()
+class AuctionsActivity : Activity() {
+    val searchParser: AuctionSearchJsonParser by injectLazy()
     val fuelService: FuelHttpService by injectLazy()
     val imageThrottle = Throttle()
 
@@ -36,10 +33,7 @@ class GithubActivity : Activity() {
         super.onCreate(savedInstanceState)
 
         // returns a promise
-        val resultPromise = fuelService.textUrl(url, listOf(
-                "q" to "android language:kotlin",
-                "sort" to "updated",
-                "order" to "desc"))
+        val resultPromise = fuelService.textUrl(url)
 
         // parse the results and display them
         resultPromise.then { msg ->
@@ -59,27 +53,28 @@ class GithubActivity : Activity() {
     private fun addResultToView(result: Result) {
         listView {
             adapter = ListAdapter(
-                    result.items,
+                    result.auctions,
                     { parent -> createView(parent) },
                     { view, id, item -> populateView(view, item) }
             )
         }
     }
 
-    private fun populateView(view: View, item: Item) {
-        view.find<TextView>(R.id.text).text = item.name
-        view.find<TextView>(R.id.stars).text = item.stars
-        view.find<TextView>(R.id.forks).text = item.forks
+    private fun populateView(view: View, auction: Auction) {
+        view.find<TextView>(R.id.text).text = auction.name
+        view.find<TextView>(R.id.house).text = auction.house
+
+        view.onClick { it?.context?.browse(auction.url) }
 
         val imageView = view.find<ImageView>(R.id.image)
 
-        item.bitmap() successUi  {
+        auction.bitmap() successUi  {
             imageView.setImageBitmap(it)
         }
 
     }
 
-    private fun Item.bitmap(): Promise<Bitmap, Exception> {
+    private fun Auction.bitmap(): Promise<Bitmap, Exception> {
         val cached = cache.get(imageUrl)
         if (cached != null) return cached
 

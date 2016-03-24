@@ -1,9 +1,8 @@
 package nl.mplatvoet.komponents.kovenant.android.demo
 
 import argo.jdom.JdomParser
-import java.util.*
 
-class GithubSearchJsonParser {
+class AuctionSearchJsonParser {
     companion object {
         val parser = JdomParser()
     }
@@ -11,23 +10,23 @@ class GithubSearchJsonParser {
     fun parse(text: String): Result {
         val rootNode = parser.parse(text)
 
-        val items = ArrayList<Item>()
-        rootNode.getArrayNode("items").forEach {
-            val name = it.getStringValue("name")
-            val stars = it.getNumberValue("stargazers_count")
-            val forks = it.getNumberValue("forks")
-            val owner = it.getNode("owner")
-            val imageUrl = owner.getStringValue("avatar_url")
+        val catalogs = rootNode.getArrayNode("data", "pageData").flatMap { it.getArrayNode("items") }
+        val items = catalogs.filter { !it.isNullNode("coverImage") }
+                .map {
+                    val title = it.getStringValue("catalogTitle")
+                    val imageUrl = it.getStringValue("coverImage", "thumbURL")
+                    val house = it.getStringValue("house", "houseName")
+                    val url = it.getStringValue("linkCatalogURL")
 
-            items.add(Item(name, imageUrl, forks = forks, stars = stars))
-        }
+                    Auction(title, house, url, imageUrl)
+                }
         return Result(items)
     }
 }
 
-data class Result(val items: List<Item>)
+data class Result(val auctions: List<Auction>)
 
-data class Item(val name: String,
-                val imageUrl: String,
-                val forks: String,
-                val stars: String)
+data class Auction(val name: String,
+                   val house: String,
+                   val url: String,
+                   val imageUrl: String)

@@ -13,7 +13,8 @@
             </intent-filter>
         </activity>
 
-        <activity android:name="GithubActivity" android:label="Github" />
+        <activity android:name="AuctionsActivity" android:label="Auctions" />
+        <activity android:name="AnkoTestActivity" android:label="Anko Test" />
     </application>
 
 </manifest>

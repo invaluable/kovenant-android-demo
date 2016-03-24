@@ -13,7 +13,7 @@ class MainActivity : Activity() {
 
     companion object : InjektMain() {
         override fun InjektRegistrar.registerInjectables() {
-            addSingleton(GithubSearchJsonParser())
+            addSingleton(AuctionSearchJsonParser())
             addSingleton(FuelHttpService())
         }
     }
@@ -32,7 +32,8 @@ class MainActivity : Activity() {
             padding = dip(32)
 
             button("Load") {
-                onClick { startActivity<GithubActivity>() }
+                onClick { startActivity<AuctionsActivity>() }
+//                onClick { startActivity<AnkoTestActivity>() }
             }
         }
     }
